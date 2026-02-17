@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #020617; /* slate-950 */
+  --foreground: #f1f5f9; /* slate-100 */
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Accessibility: Visible focus indicators */
+@layer base {
+  /* Default focus styles for all interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid theme('colors.emerald.400');
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  /* Focus styles for elements with indigo theme (AI elements) */
+  .focus-indigo:focus-visible {
+    outline-color: theme('colors.indigo.400');
+  }
+
+  /* Remove default focus outline but keep focus-visible */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
