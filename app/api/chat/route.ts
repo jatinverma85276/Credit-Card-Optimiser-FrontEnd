@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+
 interface ChatRequest {
   message: string;
   chatId: string | null;
@@ -26,13 +28,7 @@ interface ChatResponse {
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body with timeout
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Request timeout')), 30000);
-    });
-
-    const bodyPromise = request.json();
-    const body = await Promise.race([bodyPromise, timeoutPromise]) as ChatRequest;
+    const body = await request.json() as ChatRequest;
 
     // Validate request
     if (!body.message || typeof body.message !== 'string') {
@@ -42,12 +38,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: In a real implementation, this would call an AI service
-    // For now, we'll return a mock response
+    // Call backend chat API
+    const backendResponse = await fetch(`${BACKEND_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: body.message,
+        thread_id: body.chatId
+      }),
+      signal: AbortSignal.timeout(30000)
+    });
+
+    if (!backendResponse.ok) {
+      throw new Error(`Backend returned ${backendResponse.status}`);
+    }
+
+    const backendData = await backendResponse.json();
+
+    // Transform backend response to frontend format
     const responseMessage: Message = {
       id: `msg_${Date.now()}`,
       role: 'assistant',
-      content: `This is a mock response to: "${body.message}". In production, this would be replaced with actual AI-generated content.`,
+      content: backendData.response || backendData.message || 'No response',
       timestamp: new Date(),
     };
 
@@ -59,25 +71,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 200 });
 
   } catch (error: unknown) {
-    // Handle different error types
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorName = error instanceof Error ? error.name : '';
     
-    if (errorMessage === 'Request timeout') {
+    if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
       return NextResponse.json(
         { error: 'Request timed out. Please try again.' },
         { status: 408 }
       );
     }
 
-    if (errorName === 'SyntaxError') {
-      return NextResponse.json(
-        { error: 'Invalid JSON format' },
-        { status: 400 }
-      );
-    }
-
-    // Network or server errors
     console.error('Chat API error:', error);
     return NextResponse.json(
       { error: 'Service temporarily unavailable. Please try again later.' },

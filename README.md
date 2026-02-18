@@ -49,10 +49,22 @@ An AI-powered financial strategist interface designed to help users optimize the
 npm install
 ```
 
+### Configure Backend API
+
+Create a `.env.local` file in the root directory:
+
+```bash
+BACKEND_URL=http://localhost:8000
+```
+
+See [API Integration Documentation](./docs/API_INTEGRATION.md) for detailed backend integration guide.
+
 ### Run development server
 ```bash
 npm run dev
 ```
+
+Make sure your backend server is running on `http://localhost:8000` before starting the frontend.
 
 ### Build for production
 ```bash

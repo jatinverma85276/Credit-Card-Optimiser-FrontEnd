@@ -181,9 +181,43 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
+    // Load threads from backend
+    const loadThreads = async () => {
+      try {
+        const response = await fetch('/api/chat/threads');
+        if (response && response.ok) {
+          const data = await response.json();
+          
+          // Transform backend threads to frontend format
+          const transformedChats: ChatStorage['chats'] = {};
+          
+          // Backend returns {threads: [...], count: number}
+          const threads = data.threads || [];
+          
+          if (Array.isArray(threads)) {
+            threads.forEach((thread: any) => {
+              transformedChats[thread.thread_id] = {
+                id: thread.thread_id,
+                title: thread.thread_name || 'Chat',
+                messages: [],
+                createdAt: thread.created_at || new Date().toISOString(),
+                updatedAt: thread.updated_at || new Date().toISOString()
+              };
+            });
+            console.log(transformedChats, "Transformed Chat")
+            setChats(transformedChats);
+          }
+        }
+      } catch (error) {
+        // Silently fail in test/development environments
+        if (process.env.NODE_ENV !== 'test') {
+          console.error('Failed to load threads:', error);
+        }
+      }
+    };
+    
     const stored = loadFromStorage();
     if (stored) {
-      setChats(stored.chats);
       setCurrentChatId(stored.currentChatId);
       setIsIncognito(stored.userPreferences.incognitoMode);
       
@@ -203,6 +237,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         });
       }
     }
+    
+    // Load threads from backend
+    loadThreads();
   }, []);
 
   // Save to localStorage whenever state changes (unless incognito)
@@ -337,7 +374,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setMemoryLoaded(false);
   }, []);
 
-  const loadChat = useCallback((chatId: string) => {
+  const loadChat = useCallback(async (chatId: string) => {
     // Try to load from cache first
     const cachedChat = conversationCache.get(chatId);
     if (cachedChat) {
@@ -348,6 +385,40 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       })));
       setMemoryLoaded(false);
       return;
+    }
+
+    // Try to load from backend
+    try {
+      const response = await fetch(`/api/chat/history/${chatId}`);
+      if (response.ok) {
+        const history = await response.json();
+        
+        // Transform backend history to frontend messages
+        const messages: Message[] = history.messages?.map((msg: any) => ({
+          id: msg.id || `msg_${Date.now()}_${Math.random()}`,
+          role: msg.role || (msg.type === 'human' ? 'user' : 'assistant'),
+          content: msg.content || msg.message || '',
+          timestamp: new Date(msg.timestamp || Date.now())
+        })) || [];
+        
+        setCurrentChatId(chatId);
+        setMessages(messages);
+        setMemoryLoaded(false);
+        
+        // Update cache
+        const chat: Chat = {
+          id: chatId,
+          title: history.title || 'Chat',
+          messages,
+          createdAt: new Date(history.created_at || Date.now()),
+          updatedAt: new Date(history.updated_at || Date.now())
+        };
+        conversationCache.set(chatId, chat);
+        
+        return;
+      }
+    } catch (error) {
+      console.error('Failed to load chat history from backend:', error);
     }
 
     // Fall back to loading from chats state (which comes from localStorage)
