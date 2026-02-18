@@ -14,6 +14,9 @@ interface MemoryResponse {
   relevantChats: string[];
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     // Extract chatId from query parameters
@@ -33,7 +36,14 @@ export async function GET(request: NextRequest) {
         },
         relevantChats: [],
       };
-      return NextResponse.json(emptyResponse, { status: 200 });
+      return NextResponse.json(emptyResponse, { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      });
     }
 
     // TODO: In a real implementation, this would retrieve memory from a database
@@ -53,7 +63,14 @@ export async function GET(request: NextRequest) {
       relevantChats: [chatId],
     };
 
-    return NextResponse.json(mockResponse, { status: 200 });
+    return NextResponse.json(mockResponse, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    });
 
   } catch (error: unknown) {
     // Silent fallback - return empty context instead of error
@@ -71,6 +88,13 @@ export async function GET(request: NextRequest) {
       relevantChats: [],
     };
 
-    return NextResponse.json(fallbackResponse, { status: 200 });
+    return NextResponse.json(fallbackResponse, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    });
   }
 }

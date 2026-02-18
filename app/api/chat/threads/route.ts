@@ -3,6 +3,9 @@ import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     // Call backend threads API using axios
@@ -11,7 +14,14 @@ export async function GET() {
       timeout: 10000
     });
 
-    return NextResponse.json(backendResponse.data, { status: 200 });
+    return NextResponse.json(backendResponse.data, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    });
 
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
