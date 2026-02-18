@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
@@ -16,37 +17,32 @@ export async function GET(
       );
     }
 
-    // Call backend chat history API
-    const backendResponse = await fetch(
+    // Call backend chat history API using axios
+    const backendResponse = await axios.get(
       `${BACKEND_URL}/chat/history/${threadId}`,
       {
-        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(10000)
+        timeout: 10000
       }
     );
 
-    if (!backendResponse.ok) {
-      if (backendResponse.status === 404) {
+    return NextResponse.json(backendResponse.data, { status: 200 });
+
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        return NextResponse.json(
+          { error: 'Request timed out. Please try again.' },
+          { status: 408 }
+        );
+      }
+      
+      if (error.response?.status === 404) {
         return NextResponse.json(
           { error: 'Thread not found' },
           { status: 404 }
         );
       }
-      throw new Error(`Backend returned ${backendResponse.status}`);
-    }
-
-    const data = await backendResponse.json();
-    return NextResponse.json(data, { status: 200 });
-
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    
-    if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
-      return NextResponse.json(
-        { error: 'Request timed out. Please try again.' },
-        { status: 408 }
-      );
     }
 
     console.error('Chat history API error:', error);

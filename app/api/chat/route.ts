@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
@@ -38,22 +39,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call backend chat API
-    const backendResponse = await fetch(`${BACKEND_URL}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    // Call backend chat API using axios
+    const backendResponse = await axios.post(
+      `${BACKEND_URL}/chat`,
+      {
         message: body.message,
         thread_id: body.chatId
-      }),
-      signal: AbortSignal.timeout(30000)
-    });
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000
+      }
+    );
 
-    if (!backendResponse.ok) {
-      throw new Error(`Backend returned ${backendResponse.status}`);
-    }
-
-    const backendData = await backendResponse.json();
+    const backendData = backendResponse.data;
 
     // Transform backend response to frontend format
     const responseMessage: Message = {
@@ -71,13 +70,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 200 });
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    
-    if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
-      return NextResponse.json(
-        { error: 'Request timed out. Please try again.' },
-        { status: 408 }
-      );
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        return NextResponse.json(
+          { error: 'Request timed out. Please try again.' },
+          { status: 408 }
+        );
+      }
+      
+      if (error.response) {
+        return NextResponse.json(
+          { error: error.response.data?.error || 'Backend error' },
+          { status: error.response.status }
+        );
+      }
     }
 
     console.error('Chat API error:', error);

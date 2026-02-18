@@ -1,31 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    // Call backend threads API
-    const backendResponse = await fetch(`${BACKEND_URL}/chat/threads`, {
-      method: 'GET',
+    // Call backend threads API using axios
+    const backendResponse = await axios.get(`${BACKEND_URL}/chat/threads`, {
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(10000)
+      timeout: 10000
     });
 
-    if (!backendResponse.ok) {
-      throw new Error(`Backend returned ${backendResponse.status}`);
-    }
-
-    const data = await backendResponse.json();
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(backendResponse.data, { status: 200 });
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    
-    if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
-      return NextResponse.json(
-        { error: 'Request timed out. Please try again.' },
-        { status: 408 }
-      );
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        return NextResponse.json(
+          { error: 'Request timed out. Please try again.' },
+          { status: 408 }
+        );
+      }
     }
 
     console.error('Chat threads API error:', error);

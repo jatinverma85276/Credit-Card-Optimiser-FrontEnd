@@ -64,7 +64,7 @@ export function InputZone() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (error) {
+    } catch {
       setErrorMessage('Failed to upload file. Please try again.');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';

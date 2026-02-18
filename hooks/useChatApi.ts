@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import axios from 'axios';
 
 interface Thread {
   thread_id: string;
@@ -38,16 +39,13 @@ export function useChatApi() {
     setError(null);
     
     try {
-      const response = await fetch('/api/chat/threads');
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch threads');
-      }
-      
-      const data: ThreadsResponse = await response.json();
+      const response = await axios.get('/api/chat/threads');
+      const data: ThreadsResponse = response.data;
       return data.threads || [];
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorMessage = axios.isAxiosError(err) 
+        ? err.response?.data?.error || err.message 
+        : 'Unknown error';
       setError(errorMessage);
       return [];
     } finally {
@@ -60,20 +58,18 @@ export function useChatApi() {
     setError(null);
     
     try {
-      const response = await fetch(`/api/chat/history/${threadId}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Thread not found');
-        }
-        throw new Error('Failed to fetch chat history');
-      }
-      
-      const data = await response.json();
-      return data;
+      const response = await axios.get(`/api/chat/history/${threadId}`);
+      return response.data;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          setError('Thread not found');
+        } else {
+          setError(err.response?.data?.error || 'Failed to fetch chat history');
+        }
+      } else {
+        setError('Unknown error');
+      }
       return null;
     } finally {
       setLoading(false);
@@ -88,24 +84,19 @@ export function useChatApi() {
     setError(null);
     
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message,
-          chatId: threadId,
-          includeMemory: true
-        })
+      const response = await axios.post('/api/chat', {
+        message,
+        chatId: threadId,
+        includeMemory: true
+      }, {
+        headers: { 'Content-Type': 'application/json' }
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-      
-      const data = await response.json();
-      return data;
+      return response.data;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorMessage = axios.isAxiosError(err)
+        ? err.response?.data?.error || err.message
+        : 'Unknown error';
       setError(errorMessage);
       throw err;
     } finally {

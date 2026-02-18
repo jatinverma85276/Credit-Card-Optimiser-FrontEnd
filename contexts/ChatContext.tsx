@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import axios from 'axios';
 import { Message, Chat, ChatContextValue } from '@/types/chat';
 import { ChatStorage } from '@/types/memory';
 
@@ -184,29 +185,27 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // Load threads from backend
     const loadThreads = async () => {
       try {
-        const response = await fetch('/api/chat/threads');
-        if (response && response.ok) {
-          const data = await response.json();
-          
-          // Transform backend threads to frontend format
-          const transformedChats: ChatStorage['chats'] = {};
-          
-          // Backend returns {threads: [...], count: number}
-          const threads = data.threads || [];
-          
-          if (Array.isArray(threads)) {
-            threads.forEach((thread: any) => {
-              transformedChats[thread.thread_id] = {
-                id: thread.thread_id,
-                title: thread.thread_name || 'Chat',
-                messages: [],
-                createdAt: thread.created_at || new Date().toISOString(),
-                updatedAt: thread.updated_at || new Date().toISOString()
-              };
-            });
-            console.log(transformedChats, "Transformed Chat")
-            setChats(transformedChats);
-          }
+        const response = await axios.get('/api/chat/threads');
+        const data = response.data;
+        
+        // Transform backend threads to frontend format
+        const transformedChats: ChatStorage['chats'] = {};
+        
+        // Backend returns {threads: [...], count: number}
+        const threads = data.threads || [];
+        
+        if (Array.isArray(threads)) {
+          threads.forEach((thread: any) => {
+            transformedChats[thread.thread_id] = {
+              id: thread.thread_id,
+              title: thread.thread_name || 'Chat',
+              messages: [],
+              createdAt: thread.created_at || new Date().toISOString(),
+              updatedAt: thread.updated_at || new Date().toISOString()
+            };
+          });
+          console.log(transformedChats, "Transformed Chat")
+          setChats(transformedChats);
         }
       } catch (error) {
         // Silently fail in test/development environments
@@ -308,31 +307,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setMessages(prev => [...prev, userMessage]);
     
     try {
-      // Call chat API
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: content,
-          chatId: currentChatId,
-          includeMemory: !isIncognito
-        })
+      // Call chat API using axios
+      const response = await axios.post('/api/chat', {
+        message: content,
+        chatId: currentChatId,
+        includeMemory: !isIncognito
+      }, {
+        headers: { 'Content-Type': 'application/json' }
       });
       
-      if (!response.ok) {
-        // Handle different HTTP error codes
-        if (response.status === 408) {
-          throw new Error('Request timed out. Please try again.');
-        } else if (response.status === 429) {
-          throw new Error('Too many requests. Please wait a moment.');
-        } else if (response.status >= 500) {
-          throw new Error('Service temporarily unavailable. Please try again later.');
-        } else {
-          throw new Error('Failed to send message. Please try again.');
-        }
-      }
-      
-      const data = await response.json();
+      const data = response.data;
       
       // Add AI response
       const aiMessage: Message = {
@@ -355,7 +339,17 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setLastFailedMessage(content);
       
       // Set user-friendly error message
-      if (error instanceof Error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 408) {
+          setApiError('Request timed out. Please try again.');
+        } else if (error.response?.status === 429) {
+          setApiError('Too many requests. Please wait a moment.');
+        } else if (error.response?.status && error.response.status >= 500) {
+          setApiError('Service temporarily unavailable. Please try again later.');
+        } else {
+          setApiError(error.response?.data?.error || 'Failed to send message. Please try again.');
+        }
+      } else if (error instanceof Error) {
         setApiError(error.message);
       } else {
         setApiError('Connection failed. Please check your internet connection and try again.');
@@ -389,34 +383,32 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
     // Try to load from backend
     try {
-      const response = await fetch(`/api/chat/history/${chatId}`);
-      if (response.ok) {
-        const history = await response.json();
-        
-        // Transform backend history to frontend messages
-        const messages: Message[] = history.messages?.map((msg: any) => ({
-          id: msg.id || `msg_${Date.now()}_${Math.random()}`,
-          role: msg.role || (msg.type === 'human' ? 'user' : 'assistant'),
-          content: msg.content || msg.message || '',
-          timestamp: new Date(msg.timestamp || Date.now())
-        })) || [];
-        
-        setCurrentChatId(chatId);
-        setMessages(messages);
-        setMemoryLoaded(false);
-        
-        // Update cache
-        const chat: Chat = {
-          id: chatId,
-          title: history.title || 'Chat',
-          messages,
-          createdAt: new Date(history.created_at || Date.now()),
-          updatedAt: new Date(history.updated_at || Date.now())
-        };
-        conversationCache.set(chatId, chat);
-        
-        return;
-      }
+      const response = await axios.get(`/api/chat/history/${chatId}`);
+      const history = response.data;
+      
+      // Transform backend history to frontend messages
+      const messages: Message[] = history.messages?.map((msg: any) => ({
+        id: msg.id || `msg_${Date.now()}_${Math.random()}`,
+        role: msg.role || (msg.type === 'human' ? 'user' : 'assistant'),
+        content: msg.content || msg.message || '',
+        timestamp: new Date(msg.timestamp || Date.now())
+      })) || [];
+      
+      setCurrentChatId(chatId);
+      setMessages(messages);
+      setMemoryLoaded(false);
+      
+      // Update cache
+      const chat: Chat = {
+        id: chatId,
+        title: history.title || 'Chat',
+        messages,
+        createdAt: new Date(history.created_at || Date.now()),
+        updatedAt: new Date(history.updated_at || Date.now())
+      };
+      conversationCache.set(chatId, chat);
+      
+      return;
     } catch (error) {
       console.error('Failed to load chat history from backend:', error);
     }
