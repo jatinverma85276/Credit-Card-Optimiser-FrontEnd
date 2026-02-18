@@ -3,6 +3,15 @@ import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
+// Helper to generate UUID v4
+const generateUUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 interface ChatRequest {
   message: string;
   chatId: string | null;
@@ -25,6 +34,7 @@ interface MessageComponent {
 interface ChatResponse {
   message: Message;
   memoryUsed: boolean;
+  threadId?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -44,7 +54,7 @@ export async function POST(request: NextRequest) {
       `${BACKEND_URL}/chat`,
       {
         message: body.message,
-        thread_id: body.chatId
+        thread_id: body.chatId || generateUUID()
       },
       {
         headers: { 'Content-Type': 'application/json' },
@@ -53,6 +63,9 @@ export async function POST(request: NextRequest) {
     );
 
     const backendData = backendResponse.data;
+
+    // Extract thread_id from backend response if available
+    const threadId = backendData.thread_id || body.chatId;
 
     // Transform backend response to frontend format
     const responseMessage: Message = {
@@ -65,6 +78,7 @@ export async function POST(request: NextRequest) {
     const response: ChatResponse = {
       message: responseMessage,
       memoryUsed: body.includeMemory,
+      threadId: threadId, // Include thread_id in response
     };
 
     return NextResponse.json(response, { status: 200 });

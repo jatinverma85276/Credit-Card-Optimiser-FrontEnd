@@ -62,8 +62,14 @@ class ConversationCache {
 // Global cache instance
 const conversationCache = new ConversationCache();
 
-// Helper to generate unique IDs
-const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+// Helper to generate unique IDs (UUID v4 format)
+const generateId = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 // Helper to get initial title from first message
 const generateTitle = (messages: Message[]): string => {
@@ -295,6 +301,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setApiError(null);
     
+    // Generate a new chat ID if this is the first message in a new chat
+    const chatId = currentChatId || generateId();
+    
     // Create user message
     const userMessage: Message = {
       id: generateId(),
@@ -306,17 +315,27 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // Add user message to state
     setMessages(prev => [...prev, userMessage]);
     
+    // Set the chat ID immediately if it's a new chat
+    if (!currentChatId) {
+      setCurrentChatId(chatId);
+    }
+    
     try {
-      // Call chat API using axios
+      // Call chat API using axios with the chat ID
       const response = await axios.post('/api/chat', {
         message: content,
-        chatId: currentChatId,
+        chatId: chatId,
         includeMemory: !isIncognito
       }, {
         headers: { 'Content-Type': 'application/json' }
       });
       
       const data = response.data;
+      
+      // Update chat ID if backend returns a different one
+      if (data.threadId && data.threadId !== chatId) {
+        setCurrentChatId(data.threadId);
+      }
       
       // Add AI response
       const aiMessage: Message = {
@@ -369,19 +388,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loadChat = useCallback(async (chatId: string) => {
-    // Try to load from cache first
-    const cachedChat = conversationCache.get(chatId);
-    if (cachedChat) {
-      setCurrentChatId(chatId);
-      setMessages(cachedChat.messages.map(msg => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp)
-      })));
-      setMemoryLoaded(false);
-      return;
-    }
-
-    // Try to load from backend
+    
     try {
       const response = await axios.get(`/api/chat/history/${chatId}`);
       const history = response.data;
