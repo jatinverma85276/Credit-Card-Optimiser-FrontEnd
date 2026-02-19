@@ -50,4 +50,5 @@ export interface ChatContextValue {
   uploadAttachment: (file: File) => Promise<void>;
   retryLastMessage: () => Promise<void>;
   clearError: () => void;
+  deleteChat: (chatId: string) => Promise<boolean>;
 }

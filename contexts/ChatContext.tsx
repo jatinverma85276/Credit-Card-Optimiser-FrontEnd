@@ -223,24 +223,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     
     const stored = loadFromStorage();
     if (stored) {
-      setCurrentChatId(stored.currentChatId);
+      // Only restore incognito preference, not the current chat
       setIsIncognito(stored.userPreferences.incognitoMode);
       
-      // Load current chat messages if available
-      if (stored.currentChatId && stored.chats[stored.currentChatId]) {
-        const chat = stored.chats[stored.currentChatId];
-        setMessages(chat.messages.map(msg => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        })));
-        
-        // Populate cache with current chat (convert to Chat type with Date objects)
-        conversationCache.set(stored.currentChatId, {
-          ...chat,
-          createdAt: new Date(chat.createdAt),
-          updatedAt: new Date(chat.updatedAt)
-        });
-      }
+      // Don't restore currentChatId or messages - always start fresh
+      // This ensures page refresh gives a new chat window
     }
     
     // Load threads from backend
@@ -464,6 +451,35 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setLastFailedMessage(null);
   }, []);
 
+  const deleteChat = useCallback(async (chatId: string) => {
+    try {
+      // Call backend delete API
+      await axios.delete(`/api/chat/threads/${chatId}`);
+      
+      // Remove from local state
+      setChats(prev => {
+        const updated = { ...prev };
+        delete updated[chatId];
+        return updated;
+      });
+      
+      // Remove from cache
+      conversationCache.clear();
+      
+      // If the deleted chat is currently active, clear it
+      if (currentChatId === chatId) {
+        setCurrentChatId(null);
+        setMessages([]);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
+      setApiError('Failed to delete conversation. Please try again.');
+      return false;
+    }
+  }, [currentChatId]);
+
   const value: ChatContextValue = {
     messages,
     currentChatId,
@@ -481,7 +497,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     toggleSidebar,
     uploadAttachment,
     retryLastMessage,
-    clearError
+    clearError,
+    deleteChat
   };
 
   return (
