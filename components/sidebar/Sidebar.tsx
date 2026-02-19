@@ -84,7 +84,36 @@ export function Sidebar() {
         role="navigation"
         aria-label="Sidebar navigation"
       >
-        {/* Header with New Chat button */}
+        {/* Brand Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-800/50">
+          <div className="flex items-center gap-3">
+            {/* Logo/Icon */}
+            <div className="flex items-center justify-center w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5 text-white"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"
+                />
+              </svg>
+            </div>
+            
+            {/* Brand Name */}
+            <div>
+              <h1 className="text-lg font-bold text-white tracking-tight">SwipeSmart</h1>
+              <p className="text-xs text-slate-400 mt-0.5">AI Credit Card Advisor</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* New Chat Button Section */}
         <div className="p-3 sm:p-4 border-b border-slate-800">
           <NewChatButton />
         </div>
