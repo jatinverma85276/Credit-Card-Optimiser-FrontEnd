@@ -16,6 +16,11 @@ interface ChatRequest {
   message: string;
   chatId: string | null;
   includeMemory: boolean;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
 }
 
 interface Message {
@@ -54,7 +59,8 @@ export async function POST(request: NextRequest) {
       `${BACKEND_URL}/chat`,
       {
         message: body.message,
-        thread_id: body.chatId || generateUUID()
+        thread_id: body.chatId || generateUUID(),
+        user: body.user || null
       },
       {
         headers: { 'Content-Type': 'application/json' },

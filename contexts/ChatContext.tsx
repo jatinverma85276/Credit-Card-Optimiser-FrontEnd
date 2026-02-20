@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import axios from 'axios';
 import { Message, Chat, ChatContextValue } from '@/types/chat';
 import { ChatStorage } from '@/types/memory';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
@@ -164,6 +165,7 @@ const saveToStorage = (data: ChatStorage): void => {
 };
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [isIncognito, setIsIncognito] = useState(false);
@@ -308,11 +310,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
     
     try {
-      // Call chat API using axios with the chat ID
+      // Call chat API using axios with the chat ID and user info
       const response = await axios.post('/api/chat', {
         message: content,
         chatId: chatId,
-        includeMemory: !isIncognito
+        includeMemory: !isIncognito,
+        user: user ? {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        } : null
       }, {
         headers: { 'Content-Type': 'application/json' }
       });
