@@ -140,29 +140,30 @@ export function Sidebar() {
                   <p className="text-sm font-medium text-white truncate">{user.name}</p>
                   <p className="text-xs text-slate-400 truncate">{user.email}</p>
                 </div>
-              </div>
-              
-              <button 
-                onClick={logout}
-                className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-all duration-200"
-                aria-label="Logout"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
+                
+                {/* Logout Icon Button */}
+                <button 
+                  onClick={logout}
+                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-700 rounded-md transition-all duration-200"
+                  aria-label="Logout"
+                  title="Logout"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                  />
-                </svg>
-                Logout
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           )}
         </div>
