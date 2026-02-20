@@ -37,16 +37,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // For now, we'll do a simple client-side auth
-      // In production, this should call your backend API
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        name: email.split('@')[0], // Extract name from email
-        email,
-        createdAt: new Date().toISOString()
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('Login failed:', error.error || 'Unknown error');
+        return false;
+      }
+
+      const data = await response.json();
+      
+      // Extract user data from backend response
+      const userData: User = {
+        id: data.user_id || data.id || `user_${Date.now()}`,
+        name: data.name || email.split('@')[0],
+        email: data.email || email,
+        createdAt: data.created_at || new Date().toISOString()
       };
       
-      setUser(mockUser);
+      setUser(userData);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -56,16 +69,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      // For now, we'll do a simple client-side auth
-      // In production, this should call your backend API
-      const newUser: User = {
-        id: `user_${Date.now()}`,
-        name,
-        email,
-        createdAt: new Date().toISOString()
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('Signup failed:', error.error || 'Unknown error');
+        return false;
+      }
+
+      const data = await response.json();
+      
+      // Extract user data from backend response
+      const userData: User = {
+        id: data.user_id || data.id || `user_${Date.now()}`,
+        name: data.name || name,
+        email: data.email || email,
+        createdAt: data.created_at || new Date().toISOString()
       };
       
-      setUser(newUser);
+      setUser(userData);
       return true;
     } catch (error) {
       console.error('Signup failed:', error);

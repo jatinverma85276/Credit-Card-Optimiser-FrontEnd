@@ -177,7 +177,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [storageWarning, setStorageWarning] = useState<string | null>(null);
 
-  // Load saved conversations on mount
+  // Load saved conversations on mount and when user changes
   useEffect(() => {
     // Check if localStorage is available
     if (!isLocalStorageAvailable()) {
@@ -190,10 +190,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
-    // Load threads from backend
+    // Load threads from backend based on user
     const loadThreads = async () => {
+      if (!user) {
+        // Clear chats if no user is logged in
+        setChats({});
+        return;
+      }
+
       try {
-        const response = await axios.get('/api/chat/threads');
+        const response = await axios.get(`/api/chat/threads?userId=${user.id}`);
         const data = response.data;
         
         // Transform backend threads to frontend format
@@ -232,9 +238,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       // This ensures page refresh gives a new chat window
     }
     
-    // Load threads from backend
+    // Load threads from backend when user is available
     loadThreads();
-  }, []);
+  }, [user]); // Re-run when user changes (login/logout)
 
   // Save to localStorage whenever state changes (unless incognito)
   useEffect(() => {

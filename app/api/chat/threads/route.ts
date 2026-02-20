@@ -6,10 +6,20 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Call backend threads API using axios
-    const backendResponse = await axios.get(`${BACKEND_URL}/chat/threads`, {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Call backend user threads API using axios
+    const backendResponse = await axios.get(`${BACKEND_URL}/user/${userId}/threads`, {
       headers: { 'Content-Type': 'application/json' },
       timeout: 10000
     });
