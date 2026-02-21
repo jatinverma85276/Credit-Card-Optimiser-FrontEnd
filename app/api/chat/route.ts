@@ -16,6 +16,7 @@ interface ChatRequest {
   message: string;
   chatId: string | null;
   includeMemory: boolean;
+  incognito?: boolean;
   user?: {
     id: string;
     name: string;
@@ -60,7 +61,8 @@ export async function POST(request: NextRequest) {
       {
         message: body.message,
         thread_id: body.chatId || generateUUID(),
-        user: body.user || null
+        user: body.user || null,
+        incognito: body.incognito || false
       },
       {
         headers: { 'Content-Type': 'application/json' },

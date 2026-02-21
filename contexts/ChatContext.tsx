@@ -316,11 +316,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
     
     try {
-      // Call chat API using axios with the chat ID and user info
+      // Call chat API with incognito flag
       const response = await axios.post('/api/chat', {
         message: content,
-        chatId: chatId,
+        chatId: chatId, // Always pass thread_id, even in incognito mode
         includeMemory: !isIncognito,
+        incognito: isIncognito,
         user: user ? {
           id: user.id,
           name: user.name,
@@ -332,8 +333,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       
       const data = response.data;
       
-      // Update chat ID if backend returns a different one
-      if (data.threadId && data.threadId !== chatId) {
+      // Update chat ID if backend returns a different one (only for non-incognito)
+      if (!isIncognito && data.threadId && data.threadId !== chatId) {
         setCurrentChatId(data.threadId);
       }
       
@@ -344,7 +345,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       };
       
       setMessages(prev => [...prev, aiMessage]);
-      setMemoryLoaded(data.memoryUsed);
+      setMemoryLoaded(!isIncognito && data.memoryUsed);
       setLastFailedMessage(null);
       
       // Clear memory toast after 3 seconds
@@ -441,7 +442,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, [chats]);
 
   const toggleIncognito = useCallback(() => {
-    setIsIncognito(prev => !prev);
+    setIsIncognito(prev => {
+      const newValue = !prev;
+      
+      // Clear current chat when toggling incognito mode (both ON and OFF)
+      setMessages([]);
+      setCurrentChatId(null);
+      setMemoryLoaded(false);
+      
+      return newValue;
+    });
   }, []);
 
   const toggleSidebar = useCallback(() => {
