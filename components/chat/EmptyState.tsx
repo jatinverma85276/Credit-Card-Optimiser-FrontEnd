@@ -23,10 +23,11 @@ export function EmptyState({ onPromptClick }: EmptyStateProps) {
       </div>
 
       {/* Hero text with gradient */}
-      <div className="relative z-10 mb-8 sm:mb-12">
+      <div className="relative z-10 mb-12 sm:mb-16">
         <h1 
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-center px-2 gradient-text"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-center px-2 py-2 gradient-text"
           data-testid="empty-state-hero"
+          style={{ lineHeight: '1.3' }}
         >
           Where are you spending today?
         </h1>
