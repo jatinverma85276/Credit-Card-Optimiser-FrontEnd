@@ -14,24 +14,23 @@ const PRESET_PROMPTS = [
 
 export function EmptyState({ onPromptClick }: EmptyStateProps) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 sm:py-12 relative overflow-hidden">
+    <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-4 py-6 sm:py-8 md:py-12 relative overflow-hidden">
       {/* Animated background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl float" style={{ animationDelay: '0s' }}></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-500/10 rounded-full blur-3xl float" style={{ animationDelay: '0s' }}></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-purple-500/10 rounded-full blur-3xl float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/10 rounded-full blur-3xl float" style={{ animationDelay: '2s' }}></div>
       </div>
 
       {/* Hero text with gradient */}
-      <div className="relative z-10 mb-12 sm:mb-16">
+      <div className="relative z-10 mb-8 sm:mb-12 md:mb-16">
         <h1 
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-center px-2 py-2 gradient-text"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 text-center px-2 py-2 gradient-text leading-tight"
           data-testid="empty-state-hero"
-          style={{ lineHeight: '1.3' }}
         >
           Where are you spending today?
         </h1>
-        <p className="text-slate-400 text-center text-sm sm:text-base max-w-md mx-auto">
+        <p className="text-slate-400 text-center text-xs sm:text-sm md:text-base max-w-md mx-auto px-2">
           Get personalized credit card recommendations powered by AI
         </p>
       </div>

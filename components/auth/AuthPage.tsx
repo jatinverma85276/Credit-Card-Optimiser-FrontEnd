@@ -54,12 +54,12 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
       {/* Animated background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl float" style={{ animationDelay: '0s' }}></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl float" style={{ animationDelay: '1.5s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl float" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-0 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-500/20 rounded-full blur-3xl float" style={{ animationDelay: '0s' }}></div>
+        <div className="absolute bottom-0 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-purple-500/20 rounded-full blur-3xl float" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/15 rounded-full blur-3xl float" style={{ animationDelay: '3s' }}></div>
       </div>
 
       <motion.div
@@ -69,21 +69,21 @@ export function AuthPage() {
         className="w-full max-w-md relative z-10"
       >
         {/* Logo and Brand */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <motion.div 
-            className="flex items-center justify-center mb-4"
+            className="flex items-center justify-center mb-3 sm:mb-4"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl shadow-2xl glow-purple float">
+            <div className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl sm:rounded-3xl shadow-2xl glow-purple float">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
                 stroke="currentColor"
-                className="w-11 h-11 text-white"
+                className="w-9 h-9 sm:w-11 sm:h-11 text-white"
               >
                 <path
                   strokeLinecap="round"
@@ -94,7 +94,7 @@ export function AuthPage() {
             </div>
           </motion.div>
           <motion.h1 
-            className="text-4xl font-bold text-white mb-2 gradient-text"
+            className="text-3xl sm:text-4xl font-bold text-white mb-2 gradient-text"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
@@ -102,7 +102,7 @@ export function AuthPage() {
             SwipeSmart
           </motion.h1>
           <motion.p 
-            className="text-slate-400"
+            className="text-slate-400 text-sm sm:text-base"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -113,7 +113,7 @@ export function AuthPage() {
 
         {/* Auth Form */}
         <motion.div 
-          className="glass rounded-3xl shadow-2xl p-8 border border-slate-700/50 relative overflow-hidden"
+          className="glass rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-700/50 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
@@ -123,10 +123,10 @@ export function AuthPage() {
           
           <div className="relative">
             {/* Toggle Tabs */}
-            <div className="flex gap-2 mb-6 bg-slate-800/50 p-1.5 rounded-xl backdrop-blur-sm">
+            <div className="flex gap-1.5 sm:gap-2 mb-5 sm:mb-6 bg-slate-800/50 p-1 sm:p-1.5 rounded-xl backdrop-blur-sm">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
                   isLogin
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg glow-purple'
                     : 'text-slate-400 hover:text-slate-300'
@@ -136,7 +136,7 @@ export function AuthPage() {
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
                   !isLogin
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg glow-purple'
                     : 'text-slate-400 hover:text-slate-300'
@@ -151,14 +151,14 @@ export function AuthPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm backdrop-blur-sm"
+                className="mb-4 p-2.5 sm:p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs sm:text-sm backdrop-blur-sm"
               >
                 {error}
               </motion.div>
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
               {/* Name Field (Sign Up Only) */}
               {!isLogin && (
                 <motion.div
@@ -166,7 +166,7 @@ export function AuthPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
                     Full Name
                   </label>
                   <input
@@ -176,7 +176,7 @@ export function AuthPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required={!isLogin}
-                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
                     placeholder="John Doe"
                   />
                 </motion.div>
@@ -184,7 +184,7 @@ export function AuthPage() {
 
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
                   Email
                 </label>
                 <input
@@ -194,14 +194,14 @@ export function AuthPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
                   placeholder="you@example.com"
                 />
               </div>
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
                   Password
                 </label>
                 <input
@@ -212,7 +212,7 @@ export function AuthPage() {
                   onChange={handleInputChange}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -221,14 +221,14 @@ export function AuthPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="relative w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group glow-purple"
+                className="relative w-full py-3 sm:py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm sm:text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group glow-purple"
               >
                 {/* Shimmer effect */}
                 <div className="absolute inset-0 shimmer opacity-0 group-hover:opacity-100"></div>
                 
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2 relative z-10">
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -241,7 +241,7 @@ export function AuthPage() {
             </form>
 
             {/* Footer Text */}
-            <p className="mt-6 text-center text-sm text-slate-400">
+            <p className="mt-5 sm:mt-6 text-center text-xs sm:text-sm text-slate-400">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
               <button
                 onClick={() => {

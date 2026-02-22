@@ -46,14 +46,14 @@ export function ChatInterface() {
       >
         {/* Incognito Mode Banner */}
         {isIncognito && (
-          <div className="bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border-b border-purple-700/30 px-4 py-2.5 flex items-center justify-center gap-2 text-sm">
+          <div className="bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border-b border-purple-700/30 px-3 sm:px-4 py-2 sm:py-2.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-5 h-5 text-purple-400"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 flex-shrink-0"
             >
               <path
                 strokeLinecap="round"
@@ -64,7 +64,7 @@ export function ChatInterface() {
             <span className="text-purple-200 font-medium">
               Incognito Mode Active
             </span>
-            <span className="text-purple-300/70 text-xs">
+            <span className="text-purple-300/70 text-[10px] sm:text-xs hidden sm:inline">
               • Conversations won't be saved
             </span>
           </div>
