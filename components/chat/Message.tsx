@@ -14,31 +14,42 @@ export function Message({ message }: MessageProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
       className={`mb-3 md:mb-4 flex ${isUser ? 'justify-end' : 'justify-start'}`}
       data-testid={`message-${message.id}`}
       role="article"
       aria-label={`${isUser ? 'User' : 'Assistant'} message`}
     >
       <div
-        className={`max-w-[85%] sm:max-w-[80%] md:max-w-[75%] rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${
+        className={`relative max-w-[85%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl px-4 py-3 sm:px-5 sm:py-4 shadow-lg ${
           isUser
-            ? 'bg-indigo-600 text-white'
-            : 'bg-slate-800 text-slate-100'
+            ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+            : 'glass text-slate-100'
         }`}
       >
+        {/* Subtle glow effect for AI messages */}
+        {!isUser && (
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-50"></div>
+        )}
+        
         {/* Message content with markdown support */}
-        <div className="prose prose-invert prose-sm sm:prose-base max-w-none">
+        <div className="relative prose prose-invert prose-sm sm:prose-base max-w-none">
           <MarkdownRenderer content={message.content} />
         </div>
 
         {/* Render special components if present */}
         {message.components?.map((component, idx) => (
-          <div key={idx} className="mt-3 sm:mt-4">
+          <motion.div 
+            key={idx} 
+            className="relative mt-3 sm:mt-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
             <ComponentRenderer component={component} />
-          </div>
+          </motion.div>
         ))}
       </div>
     </motion.div>

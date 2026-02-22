@@ -120,17 +120,20 @@ export function Sidebar() {
         style={isMobile ? { touchAction: 'pan-y' } : undefined}
       >
         {/* Brand Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800/50">
-          <div className="flex items-center gap-3">
-            {/* Logo/Icon */}
-            <div className="flex items-center justify-center w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg">
+        <div className="p-4 sm:p-5 border-b border-slate-800/50 relative overflow-hidden">
+          {/* Subtle gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5"></div>
+          
+          <div className="relative flex items-center gap-3">
+            {/* Logo/Icon with glow */}
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg glow-purple">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
                 stroke="currentColor"
-                className="w-5 h-5 text-white"
+                className="w-6 h-6 text-white"
               >
                 <path
                   strokeLinecap="round"
