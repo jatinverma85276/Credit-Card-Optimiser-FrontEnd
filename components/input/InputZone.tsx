@@ -18,8 +18,15 @@ export function InputZone() {
   const handleSubmit = async () => {
     if (!value.trim() || isLoading) return;
     
-    await sendMessage(value);
-    setValue('');
+    const messageToSend = value;
+    setValue(''); // Clear input immediately for better UX
+    
+    try {
+      await sendMessage(messageToSend);
+    } catch (error) {
+      // If sending fails, restore the message
+      setValue(messageToSend);
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -81,13 +88,13 @@ export function InputZone() {
             {/* Glow effect on focus */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl opacity-0 group-focus-within:opacity-20 blur transition-opacity duration-500"></div>
             
-            <div className="relative flex items-end gap-1 sm:gap-2 glass rounded-xl p-2 sm:p-3 shadow-2xl">
+            <div className="relative flex items-center gap-1 sm:gap-2 glass rounded-xl p-2 sm:p-3 shadow-2xl">
               {/* Attachment button */}
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
                 className={cn(
-                  'p-2.5 text-slate-400 hover:text-emerald-400 hover:scale-110 hover:rotate-12 transition-all duration-300 flex-shrink-0 rounded-lg hover:bg-emerald-500/10',
+                  'p-2 sm:p-2.5 text-slate-400 hover:text-emerald-400 hover:scale-110 hover:rotate-12 transition-all duration-300 flex-shrink-0 rounded-lg hover:bg-emerald-500/10 self-end',
                   'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:rotate-0',
                   'touch-manipulation'
                 )}
@@ -99,7 +106,7 @@ export function InputZone() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-5 h-5 sm:w-5 sm:h-5"
+                  className="w-5 h-5"
                   aria-hidden="true"
                 >
                   <path
@@ -120,14 +127,14 @@ export function InputZone() {
               />
               
               {/* Auto-expanding textarea */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex items-center">
                 <AutoExpandingTextarea
                   value={value}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask about credit cards..."
                   disabled={isLoading}
-                  className="px-2 py-2"
+                  className="px-2 py-2.5"
                 />
               </div>
               
@@ -135,7 +142,7 @@ export function InputZone() {
               <button
                 disabled={isLoading}
                 className={cn(
-                  'p-2.5 text-slate-400 hover:text-indigo-400 hover:scale-110 transition-all duration-300 flex-shrink-0 rounded-lg hover:bg-indigo-500/10',
+                  'p-2 sm:p-2.5 text-slate-400 hover:text-indigo-400 hover:scale-110 transition-all duration-300 flex-shrink-0 rounded-lg hover:bg-indigo-500/10 self-end',
                   'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100',
                   'touch-manipulation'
                 )}
@@ -147,7 +154,7 @@ export function InputZone() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-5 h-5 sm:w-5 sm:h-5"
+                  className="w-5 h-5"
                   aria-hidden="true"
                 >
                   <path
@@ -163,7 +170,7 @@ export function InputZone() {
                 onClick={handleSubmit}
                 disabled={!value.trim() || isLoading}
                 className={cn(
-                  'relative p-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl transition-all duration-300 flex-shrink-0 overflow-hidden group/btn',
+                  'relative p-2 sm:p-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl transition-all duration-300 flex-shrink-0 overflow-hidden group/btn self-end',
                   'hover:from-emerald-500 hover:to-teal-500 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/30 glow',
                   'disabled:opacity-50 disabled:cursor-not-allowed',
                   'disabled:hover:from-emerald-600 disabled:hover:to-teal-600 disabled:hover:scale-100 disabled:hover:shadow-none',
@@ -176,7 +183,7 @@ export function InputZone() {
                 
                 {isLoading ? (
                   <svg
-                    className="w-5 h-5 sm:w-5 sm:h-5 animate-spin relative z-10"
+                    className="w-5 h-5 animate-spin relative z-10"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -203,7 +210,7 @@ export function InputZone() {
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                     stroke="currentColor"
-                    className="w-5 h-5 sm:w-5 sm:h-5 relative z-10 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300"
+                    className="w-5 h-5 relative z-10 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300"
                     aria-hidden="true"
                   >
                     <path

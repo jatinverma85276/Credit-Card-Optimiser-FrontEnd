@@ -49,8 +49,9 @@ export const AutoExpandingTextarea = forwardRef<HTMLTextAreaElement, AutoExpandi
           'w-full resize-none bg-transparent text-slate-100 placeholder:text-slate-500',
           'focus:outline-none focus:ring-0',
           'min-h-[40px] max-h-[200px] overflow-y-auto',
-          'text-base', // Prevent iOS zoom on focus (minimum 16px)
+          'text-base leading-normal', // Prevent iOS zoom on focus (minimum 16px) and consistent line height
           'transition-all duration-200',
+          'flex items-center', // Ensure vertical centering
           className
         )}
       />
