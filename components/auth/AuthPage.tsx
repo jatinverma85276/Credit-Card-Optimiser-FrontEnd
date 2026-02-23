@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function AuthPage() {
   const { login, signup } = useAuth();
@@ -160,27 +160,46 @@ export function AuthPage() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
               {/* Name Field (Sign Up Only) */}
-              {!isLogin && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                >
-                  <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required={!isLogin}
-                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
-                    placeholder="John Doe"
-                  />
-                </motion.div>
-              )}
+              <AnimatePresence mode="wait">
+                {!isLogin && (
+                  <motion.div
+                    key="name-field"
+                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    animate={{ 
+                      opacity: 1, 
+                      height: 'auto',
+                      marginBottom: '0.875rem',
+                      transition: { 
+                        duration: 0.3,
+                        ease: [0.66, 1, 0.32, 1]
+                      }
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      height: 0,
+                      marginBottom: 0,
+                      transition: { 
+                        duration: 0.3,
+                        ease: [0.66, 1, 0.32, 1]
+                      }
+                    }}
+                  >
+                    <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-slate-300 mb-1.5 sm:mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required={!isLogin}
+                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all backdrop-blur-sm"
+                      placeholder="John Doe"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Email Field */}
               <div>
