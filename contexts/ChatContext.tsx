@@ -190,14 +190,20 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
+    // Clear chat state when user logs out
+    if (!user) {
+      setChats({});
+      setMessages([]);
+      setCurrentChatId(null);
+      setMemoryLoaded(false);
+      setApiError(null);
+      setLastFailedMessage(null);
+      conversationCache.clear();
+      return;
+    }
+    
     // Load threads from backend based on user
     const loadThreads = async () => {
-      if (!user) {
-        // Clear chats if no user is logged in
-        setChats({});
-        return;
-      }
-
       try {
         const response = await axios.get(`/api/chat/threads?userId=${user.id}`);
         const data = response.data;

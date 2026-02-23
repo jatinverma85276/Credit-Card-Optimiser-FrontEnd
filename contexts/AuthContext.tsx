@@ -102,6 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
+    // Also clear chat storage on logout
+    localStorage.removeItem('swipesmart_chats');
   };
 
   const value: AuthContextValue = {
