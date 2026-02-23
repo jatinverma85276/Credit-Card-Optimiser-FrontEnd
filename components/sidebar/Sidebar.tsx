@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { NewChatButton } from './NewChatButton';
 import { RecentStrategies } from './RecentStrategies';
 import { IncognitoToggle } from './IncognitoToggle';
+import { SettingsDropdown } from './SettingsDropdown';
+import { ManageCardsModal } from '@/components/ui/ManageCardsModal';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 
@@ -14,6 +16,7 @@ export function Sidebar() {
   const { user, logout } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   const [dragX, setDragX] = useState(0);
+  const [isManageCardsOpen, setIsManageCardsOpen] = useState(false);
 
   // Detect mobile viewport
   useEffect(() => {
@@ -201,28 +204,33 @@ export function Sidebar() {
                   <p className="text-xs text-slate-400 truncate">{user.email}</p>
                 </div>
                 
-                {/* Logout Icon Button */}
-                <button 
-                  onClick={logout}
-                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-700 rounded-md transition-all duration-200"
-                  aria-label="Logout"
-                  title="Logout"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5"
+                {/* Settings and Logout */}
+                <div className="flex items-center gap-1">
+                  <SettingsDropdown onManageCards={() => setIsManageCardsOpen(true)} />
+                  
+                  {/* Logout Icon Button */}
+                  <button 
+                    onClick={logout}
+                    className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-700 rounded-md transition-all duration-200"
+                    aria-label="Logout"
+                    title="Logout"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -242,6 +250,12 @@ export function Sidebar() {
           />
         )}
       </AnimatePresence>
+      
+      {/* Manage Cards Modal */}
+      <ManageCardsModal 
+        isOpen={isManageCardsOpen} 
+        onClose={() => setIsManageCardsOpen(false)} 
+      />
     </>
   );
 }
