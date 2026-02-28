@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserCard, UserCardsResponse } from '@/types/userCard';
 import { AddCardModal } from './AddCardModal';
+import { CardDetailsModal } from './CardDetailsModal';
 import axios from 'axios';
 
 // Card gradient colors based on issuer
@@ -29,6 +30,7 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAddCardOpen, setIsAddCardOpen] = useState(false);
+  const [selectedCardDetails, setSelectedCardDetails] = useState<UserCard | null>(null);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -144,6 +146,33 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
 
               {/* Content */}
               <div className="p-6 overflow-y-auto max-h-[calc(85vh-120px)]">
+                {/* Add New Card Button - Moved to top */}
+                {!isLoading && (
+                  <motion.button
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => setIsAddCardOpen(true)}
+                    className="mb-6 w-full py-4 glass rounded-xl border-2 border-dashed border-slate-600 hover:border-emerald-500 text-slate-400 hover:text-emerald-400 transition-all duration-300 flex items-center justify-center gap-2 group"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                    <span className="font-medium">Add New Card</span>
+                  </motion.button>
+                )}
+
                 {/* Loading State */}
                 {isLoading && (
                   <div className="flex flex-col items-center justify-center py-12">
@@ -235,6 +264,7 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
                               </div>
                               <div className="flex gap-2">
                                 <button
+                                  onClick={() => setSelectedCardDetails(card)}
                                   className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all duration-200"
                                   aria-label="View details"
                                   title="View details"
@@ -298,33 +328,6 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
                     ))}
                   </div>
                 )}
-
-                {/* Add New Card Button */}
-                {!isLoading && (
-                  <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: cards.length * 0.1 + 0.2, duration: 0.3 }}
-                    onClick={() => setIsAddCardOpen(true)}
-                    className="mt-6 w-full py-4 glass rounded-xl border-2 border-dashed border-slate-600 hover:border-emerald-500 text-slate-400 hover:text-emerald-400 transition-all duration-300 flex items-center justify-center gap-2 group"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                    <span className="font-medium">Add New Card</span>
-                  </motion.button>
-                )}
               </div>
             </motion.div>
           </div>
@@ -335,6 +338,16 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
             onClose={() => setIsAddCardOpen(false)}
             onCardAdded={handleCardAdded}
           />
+          
+          {/* Card Details Modal */}
+          {selectedCardDetails && (
+            <CardDetailsModal
+              card={selectedCardDetails}
+              isOpen={!!selectedCardDetails}
+              onClose={() => setSelectedCardDetails(null)}
+              gradient={getCardGradient(selectedCardDetails.issuer)}
+            />
+          )}
         </>
       )}
     </AnimatePresence>
