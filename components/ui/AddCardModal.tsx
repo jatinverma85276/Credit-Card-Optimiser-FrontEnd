@@ -23,7 +23,7 @@ interface AddCardModalProps {
   onCardAdded: () => void;
 }
 
-// Dummy banks data - replace with API call if available
+// Comprehensive banks data
 const BANKS: Bank[] = [
   { id: 'hdfc', name: 'HDFC Bank' },
   { id: 'icici', name: 'ICICI Bank' },
@@ -34,26 +34,126 @@ const BANKS: Bank[] = [
   { id: 'amex', name: 'American Express' },
   { id: 'hsbc', name: 'HSBC' },
   { id: 'standard', name: 'Standard Chartered' },
+  { id: 'indusind', name: 'IndusInd Bank' },
+  { id: 'yes', name: 'YES Bank' },
+  { id: 'rbl', name: 'RBL Bank' },
+  { id: 'idfc', name: 'IDFC FIRST Bank' },
+  { id: 'au', name: 'AU Small Finance Bank' },
+  { id: 'bob', name: 'Bank of Baroda' },
 ];
 
-// Dummy cards by bank - replace with API call
+// Comprehensive cards by bank
 const CARDS_BY_BANK: Record<string, BankCard[]> = {
   hdfc: [
-    { id: 'hdfc_regalia', name: 'Regalia Gold', type: 'Credit Card', annual_fee: 2500 },
-    { id: 'hdfc_diners', name: 'Diners Club Black', type: 'Credit Card', annual_fee: 10000 },
-    { id: 'hdfc_millennia', name: 'Millennia Credit Card', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'hdfc_infinia', name: 'Infinia', type: 'Credit Card', annual_fee: 12500 },
+    { id: 'hdfc_diners_black', name: 'Diners Club Black', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'hdfc_regalia_gold', name: 'Regalia Gold', type: 'Credit Card', annual_fee: 2500 },
+    { id: 'hdfc_regalia', name: 'Regalia', type: 'Credit Card', annual_fee: 2500 },
+    { id: 'hdfc_millennia', name: 'Millennia', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'hdfc_freedom', name: 'Freedom', type: 'Credit Card', annual_fee: 500 },
+    { id: 'hdfc_moneyback', name: 'MoneyBack', type: 'Credit Card', annual_fee: 500 },
+    { id: 'hdfc_shoppers_stop', name: 'Shoppers Stop', type: 'Credit Card', annual_fee: 500 },
+    { id: 'hdfc_tata_neu_infinity', name: 'Tata Neu Infinity', type: 'Credit Card', annual_fee: 0 },
+    { id: 'hdfc_swiggy', name: 'Swiggy', type: 'Credit Card', annual_fee: 500 },
   ],
   icici: [
-    { id: 'icici_sapphiro', name: 'Sapphiro Credit Card', type: 'Credit Card', annual_fee: 3500 },
-    { id: 'icici_amazon', name: 'Amazon Pay Credit Card', type: 'Credit Card', annual_fee: 0 },
+    { id: 'icici_emeralde', name: 'Emeralde Private Metal', type: 'Credit Card', annual_fee: 12000 },
+    { id: 'icici_sapphiro', name: 'Sapphiro', type: 'Credit Card', annual_fee: 3500 },
+    { id: 'icici_coral', name: 'Coral', type: 'Credit Card', annual_fee: 500 },
+    { id: 'icici_rubyx', name: 'Rubyx', type: 'Credit Card', annual_fee: 3000 },
+    { id: 'icici_amazon_pay', name: 'Amazon Pay', type: 'Credit Card', annual_fee: 0 },
+    { id: 'icici_makemytrip', name: 'MakeMyTrip', type: 'Credit Card', annual_fee: 500 },
+    { id: 'icici_platinum', name: 'Platinum Chip', type: 'Credit Card', annual_fee: 199 },
+    { id: 'icici_manchester_united', name: 'Manchester United', type: 'Credit Card', annual_fee: 500 },
   ],
   sbi: [
     { id: 'sbi_elite', name: 'Card ELITE', type: 'Credit Card', annual_fee: 4999 },
-    { id: 'sbi_simply', name: 'SimplySAVE Credit Card', type: 'Credit Card', annual_fee: 499 },
+    { id: 'sbi_prime', name: 'Card PRIME', type: 'Credit Card', annual_fee: 2999 },
+    { id: 'sbi_simply_save', name: 'SimplySAVE', type: 'Credit Card', annual_fee: 499 },
+    { id: 'sbi_simply_click', name: 'SimplyCLICK', type: 'Credit Card', annual_fee: 499 },
+    { id: 'sbi_pulse', name: 'PULSE', type: 'Credit Card', annual_fee: 0 },
+    { id: 'sbi_irctc', name: 'IRCTC', type: 'Credit Card', annual_fee: 500 },
+    { id: 'sbi_cashback', name: 'Cashback', type: 'Credit Card', annual_fee: 999 },
   ],
   axis: [
-    { id: 'axis_magnus', name: 'Magnus Credit Card', type: 'Credit Card', annual_fee: 10000 },
-    { id: 'axis_flipkart', name: 'Flipkart Credit Card', type: 'Credit Card', annual_fee: 500 },
+    { id: 'axis_magnus', name: 'Magnus', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'axis_reserve', name: 'Reserve', type: 'Credit Card', annual_fee: 50000 },
+    { id: 'axis_vistara_infinite', name: 'Vistara Infinite', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'axis_privilege', name: 'Privilege', type: 'Credit Card', annual_fee: 1500 },
+    { id: 'axis_ace', name: 'Ace', type: 'Credit Card', annual_fee: 499 },
+    { id: 'axis_flipkart', name: 'Flipkart', type: 'Credit Card', annual_fee: 500 },
+    { id: 'axis_myzone', name: 'MY ZONE', type: 'Credit Card', annual_fee: 500 },
+    { id: 'axis_neo', name: 'Neo', type: 'Credit Card', annual_fee: 0 },
+    { id: 'axis_airtel', name: 'Airtel', type: 'Credit Card', annual_fee: 500 },
+  ],
+  kotak: [
+    { id: 'kotak_811', name: '811 #DreamDifferent', type: 'Credit Card', annual_fee: 0 },
+    { id: 'kotak_white', name: 'White Reserve', type: 'Credit Card', annual_fee: 5000 },
+    { id: 'kotak_league_platinum', name: 'League Platinum', type: 'Credit Card', annual_fee: 999 },
+    { id: 'kotak_myntra', name: 'Myntra', type: 'Credit Card', annual_fee: 500 },
+    { id: 'kotak_zen', name: 'Zen Signature', type: 'Credit Card', annual_fee: 999 },
+  ],
+  citi: [
+    { id: 'citi_prestige', name: 'Prestige', type: 'Credit Card', annual_fee: 20000 },
+    { id: 'citi_premiermiles', name: 'PremierMiles', type: 'Credit Card', annual_fee: 3000 },
+    { id: 'citi_rewards', name: 'Rewards', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'citi_cashback', name: 'Cashback', type: 'Credit Card', annual_fee: 500 },
+  ],
+  amex: [
+    { id: 'amex_platinum', name: 'Platinum Card', type: 'Credit Card', annual_fee: 60000 },
+    { id: 'amex_gold', name: 'Gold Card', type: 'Credit Card', annual_fee: 4500 },
+    { id: 'amex_mrcc', name: 'Membership Rewards', type: 'Credit Card', annual_fee: 1500 },
+    { id: 'amex_smartearn', name: 'SmartEarn', type: 'Credit Card', annual_fee: 495 },
+    { id: 'amex_platinum_travel', name: 'Platinum Travel', type: 'Credit Card', annual_fee: 5000 },
+  ],
+  hsbc: [
+    { id: 'hsbc_premier', name: 'Premier', type: 'Credit Card', annual_fee: 2999 },
+    { id: 'hsbc_visa_platinum', name: 'Visa Platinum', type: 'Credit Card', annual_fee: 1499 },
+    { id: 'hsbc_cashback', name: 'Cashback', type: 'Credit Card', annual_fee: 999 },
+    { id: 'hsbc_live_plus', name: 'Live+', type: 'Credit Card', annual_fee: 999 },
+  ],
+  standard: [
+    { id: 'sc_ultimate', name: 'Ultimate', type: 'Credit Card', annual_fee: 5000 },
+    { id: 'sc_super_value_titanium', name: 'Super Value Titanium', type: 'Credit Card', annual_fee: 1499 },
+    { id: 'sc_digismart', name: 'DigiSmart', type: 'Credit Card', annual_fee: 499 },
+    { id: 'sc_platinum_rewards', name: 'Platinum Rewards', type: 'Credit Card', annual_fee: 999 },
+  ],
+  indusind: [
+    { id: 'indusind_legend', name: 'Legend', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'indusind_pinnacle', name: 'Pinnacle', type: 'Credit Card', annual_fee: 5000 },
+    { id: 'indusind_iconia', name: 'Iconia', type: 'Credit Card', annual_fee: 2500 },
+    { id: 'indusind_eazydiner', name: 'EazyDiner', type: 'Credit Card', annual_fee: 2500 },
+    { id: 'indusind_nexxt', name: 'Nexxt', type: 'Credit Card', annual_fee: 500 },
+  ],
+  yes: [
+    { id: 'yes_first_exclusive', name: 'FIRST Exclusive', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'yes_first_preferred', name: 'FIRST Preferred', type: 'Credit Card', annual_fee: 2499 },
+    { id: 'yes_prosperity_edge', name: 'Prosperity Edge', type: 'Credit Card', annual_fee: 499 },
+    { id: 'yes_ace', name: 'Ace', type: 'Credit Card', annual_fee: 499 },
+  ],
+  rbl: [
+    { id: 'rbl_world_safari', name: 'World Safari', type: 'Credit Card', annual_fee: 3000 },
+    { id: 'rbl_shoprite', name: 'ShopRite', type: 'Credit Card', annual_fee: 2000 },
+    { id: 'rbl_platinum_maxima', name: 'Platinum Maxima', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'rbl_popcorn', name: 'Popcorn', type: 'Credit Card', annual_fee: 500 },
+  ],
+  idfc: [
+    { id: 'idfc_wealth', name: 'WEALTH', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'idfc_select', name: 'SELECT', type: 'Credit Card', annual_fee: 500 },
+    { id: 'idfc_club_vistara', name: 'Club Vistara', type: 'Credit Card', annual_fee: 3000 },
+    { id: 'idfc_first_wow', name: 'FIRST WOW', type: 'Credit Card', annual_fee: 500 },
+  ],
+  au: [
+    { id: 'au_zenith', name: 'Zenith', type: 'Credit Card', annual_fee: 5000 },
+    { id: 'au_altura', name: 'Altura', type: 'Credit Card', annual_fee: 2000 },
+    { id: 'au_altura_plus', name: 'Altura Plus', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'au_lit', name: 'LIT', type: 'Credit Card', annual_fee: 500 },
+  ],
+  bob: [
+    { id: 'bob_premier', name: 'Premier', type: 'Credit Card', annual_fee: 3999 },
+    { id: 'bob_eterna', name: 'Eterna', type: 'Credit Card', annual_fee: 2999 },
+    { id: 'bob_easy', name: 'Easy', type: 'Credit Card', annual_fee: 500 },
+    { id: 'bob_energy', name: 'Energy', type: 'Credit Card', annual_fee: 500 },
   ],
 };
 

@@ -46,7 +46,7 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
 
     try {
       const response = await axios.get<UserCardsResponse>(
-        `http://localhost:8000/user/${user.id}/cards`
+        `/api/user/${user.id}/cards`
       );
       
       setCards(response.data.cards || []);
