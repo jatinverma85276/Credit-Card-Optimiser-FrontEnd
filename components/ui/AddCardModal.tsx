@@ -39,21 +39,21 @@ const BANKS: Bank[] = [
 // Dummy cards by bank - replace with API call
 const CARDS_BY_BANK: Record<string, BankCard[]> = {
   hdfc: [
-    { id: 'hdfc_regalia', name: 'HDFC Regalia Gold Credit Card', type: 'Credit Card', annual_fee: 2500 },
-    { id: 'hdfc_diners', name: 'HDFC Diners Club Black', type: 'Credit Card', annual_fee: 10000 },
-    { id: 'hdfc_millennia', name: 'HDFC Millennia Credit Card', type: 'Credit Card', annual_fee: 1000 },
+    { id: 'hdfc_regalia', name: 'Regalia Gold', type: 'Credit Card', annual_fee: 2500 },
+    { id: 'hdfc_diners', name: 'Diners Club Black', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'hdfc_millennia', name: 'Millennia Credit Card', type: 'Credit Card', annual_fee: 1000 },
   ],
   icici: [
-    { id: 'icici_sapphiro', name: 'ICICI Bank Sapphiro Credit Card', type: 'Credit Card', annual_fee: 3500 },
-    { id: 'icici_amazon', name: 'Amazon Pay ICICI Credit Card', type: 'Credit Card', annual_fee: 0 },
+    { id: 'icici_sapphiro', name: 'Sapphiro Credit Card', type: 'Credit Card', annual_fee: 3500 },
+    { id: 'icici_amazon', name: 'Amazon Pay Credit Card', type: 'Credit Card', annual_fee: 0 },
   ],
   sbi: [
-    { id: 'sbi_elite', name: 'SBI Card ELITE', type: 'Credit Card', annual_fee: 4999 },
-    { id: 'sbi_simply', name: 'SBI SimplySAVE Credit Card', type: 'Credit Card', annual_fee: 499 },
+    { id: 'sbi_elite', name: 'Card ELITE', type: 'Credit Card', annual_fee: 4999 },
+    { id: 'sbi_simply', name: 'SimplySAVE Credit Card', type: 'Credit Card', annual_fee: 499 },
   ],
   axis: [
-    { id: 'axis_magnus', name: 'Axis Bank Magnus Credit Card', type: 'Credit Card', annual_fee: 10000 },
-    { id: 'axis_flipkart', name: 'Flipkart Axis Bank Credit Card', type: 'Credit Card', annual_fee: 500 },
+    { id: 'axis_magnus', name: 'Magnus Credit Card', type: 'Credit Card', annual_fee: 10000 },
+    { id: 'axis_flipkart', name: 'Flipkart Credit Card', type: 'Credit Card', annual_fee: 500 },
   ],
 };
 
@@ -64,6 +64,7 @@ export function AddCardModal({ isOpen, onClose, onCardAdded }: AddCardModalProps
   const [availableCards, setAvailableCards] = useState<BankCard[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Reset form when modal opens
   useEffect(() => {
@@ -99,28 +100,43 @@ export function AddCardModal({ isOpen, onClose, onCardAdded }: AddCardModalProps
     try {
       // Find the selected card details
       const cardDetails = availableCards.find(card => card.id === selectedCard);
+      const bankDetails = BANKS.find(bank => bank.id === selectedBank);
       
-      if (!cardDetails) {
-        throw new Error('Card not found');
+      if (!cardDetails || !bankDetails) {
+        throw new Error('Card or bank not found');
       }
 
-      // TODO: Replace with actual API endpoint to add card
-      // For now, we'll simulate the API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Example API call (uncomment when endpoint is ready):
-      // await axios.post(`http://localhost:8000/user/${user.id}/cards`, {
-      //   card_id: selectedCard,
-      //   bank_id: selectedBank,
-      //   card_name: cardDetails.name
-      // });
+      // Call the API to add card
+      console.log('Sending request to add card:', {
+        bank_name: bankDetails.name,
+        card_name: cardDetails.name,
+        user_id: user.id
+      });
 
-      // Success - close modal and refresh cards list
-      onCardAdded();
-      onClose();
+      const response = await axios.post('/api/add_card', {
+        bank_name: bankDetails.name,
+        card_name: cardDetails.name,
+        user_id: user.id
+      });
+
+      console.log('Card added successfully:', response.data);
+
+      // Show success message
+      setShowSuccess(true);
+      
+      // Wait a moment to show success, then close and refresh
+      setTimeout(() => {
+        setShowSuccess(false);
+        onCardAdded();
+        onClose();
+      }, 1500);
     } catch (err) {
       console.error('Failed to add card:', err);
-      setError('Failed to add card. Please try again.');
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || err.response?.data?.detail || 'Failed to add card. Please try again.');
+      } else {
+        setError('Failed to add card. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -199,6 +215,36 @@ export function AddCardModal({ isOpen, onClose, onCardAdded }: AddCardModalProps
 
               {/* Content */}
               <form onSubmit={handleSubmit} className="p-6">
+                {/* Success Message */}
+                {showSuccess && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="mb-4 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3"
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 bg-emerald-500 rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5 text-white"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 12.75l6 6 9-13.5"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-emerald-200 font-medium">Card added successfully!</p>
+                      <p className="text-xs text-emerald-300/70 mt-0.5">Refreshing your card list...</p>
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Error Message */}
                 {error && (
                   <motion.div

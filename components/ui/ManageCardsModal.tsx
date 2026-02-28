@@ -60,6 +60,7 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
 
   const handleCardAdded = () => {
     // Refresh the cards list after adding a new card
+    console.log('handleCardAdded called - refreshing cards list');
     fetchUserCards();
   };
 
