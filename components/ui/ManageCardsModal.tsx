@@ -32,12 +32,6 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
   const [isAddCardOpen, setIsAddCardOpen] = useState(false);
   const [selectedCardDetails, setSelectedCardDetails] = useState<UserCard | null>(null);
 
-  useEffect(() => {
-    if (isOpen && user) {
-      fetchUserCards();
-    }
-  }, [isOpen, user]);
-
   const fetchUserCards = async () => {
     if (!user) return;
 
@@ -57,6 +51,13 @@ export function ManageCardsModal({ isOpen, onClose }: ManageCardsModalProps) {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isOpen && user) {
+      fetchUserCards();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, user]);
 
   const handleCardAdded = () => {
     // Refresh the cards list after adding a new card

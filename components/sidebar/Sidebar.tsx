@@ -15,6 +15,7 @@ export function Sidebar() {
   const { sidebarOpen, toggleSidebar } = useChat();
   const { user, logout } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dragX, setDragX] = useState(0);
   const [isManageCardsOpen, setIsManageCardsOpen] = useState(false);
 

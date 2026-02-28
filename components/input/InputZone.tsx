@@ -23,7 +23,7 @@ export function InputZone() {
     
     try {
       await sendMessage(messageToSend);
-    } catch (error) {
+    } catch {
       // If sending fails, restore the message
       setValue(messageToSend);
     }

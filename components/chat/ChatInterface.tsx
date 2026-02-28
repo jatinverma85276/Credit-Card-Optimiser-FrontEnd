@@ -65,7 +65,7 @@ export function ChatInterface() {
               Incognito Mode Active
             </span>
             <span className="text-purple-300/70 text-[10px] sm:text-xs hidden sm:inline">
-              • Conversations won't be saved
+              • Conversations won&apos;t be saved
             </span>
           </div>
         )}

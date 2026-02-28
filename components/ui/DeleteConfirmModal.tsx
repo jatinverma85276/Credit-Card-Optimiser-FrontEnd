@@ -78,7 +78,7 @@ export function DeleteConfirmModal({ isOpen, onConfirm, onCancel, title }: Delet
 
               {/* Message */}
               <p className="text-sm text-slate-400 text-center mb-6">
-                Are you sure you want to delete "{title}"? This action cannot be undone.
+                Are you sure you want to delete &ldquo;{title}&rdquo;? This action cannot be undone.
               </p>
 
               {/* Actions */}

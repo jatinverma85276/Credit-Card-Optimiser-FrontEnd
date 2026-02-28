@@ -38,7 +38,7 @@ export function AuthPage() {
       if (!success) {
         setError(isLogin ? 'Login failed. Please try again.' : 'Signup failed. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
@@ -261,7 +261,7 @@ export function AuthPage() {
 
             {/* Footer Text */}
             <p className="mt-5 sm:mt-6 text-center text-xs sm:text-sm text-slate-400">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              {isLogin ? "Don&apos;t have an account? " : "Already have an account? "}
               <button
                 onClick={() => {
                   setIsLogin(!isLogin);

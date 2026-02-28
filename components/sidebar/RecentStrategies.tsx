@@ -26,7 +26,7 @@ export function RecentStrategies() {
     setDeletingId(chatToDelete.id);
     setChatToDelete(null);
     
-    const success = await deleteChat(chatToDelete.id);
+    await deleteChat(chatToDelete.id);
     setDeletingId(null);
   };
 
