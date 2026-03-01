@@ -53,7 +53,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         },
         // Paragraphs
         p: ({ children }) => (
-          <p className="my-2">{children}</p>
+          <p>{children}</p>
         ),
       }}
     >
